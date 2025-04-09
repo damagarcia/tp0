@@ -18,21 +18,24 @@ void* serializar_paquete(t_paquete* paquete, int bytes)
 
 int crear_conexion(char *ip, char* puerto)
 {
-	struct addrinfo hints;
-	struct addrinfo *server_info;
+	struct addrinfo hints; 
+	struct addrinfo *server_info;// server_info puntero donde se guardara direccciones que coinciden
 
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
+	memset(&hints, 0, sizeof(hints));// pone o en todos los lugares del struct hints
+	hints.ai_family = AF_INET;      // configuracion de hints
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	getaddrinfo(ip, puerto, &hints, &server_info);
+	getaddrinfo(ip, puerto, &hints, &server_info);// getaddrinfo toma informacion del servidor
 
 	// Ahora vamos a crear el socket.
 	int socket_cliente = 0;
 
-	// Ahora que tenemos el socket, vamos a conectarlo
+    socket_cliente= socket(server_info->ai_family,server_info->ai_socktype,server_info->ai_protocol);// se crea el socket con info guardada en addrinfo usando el puntero server_info y llenado por getaddrinfo
 
+
+	// Ahora que tenemos el socket, vamos a conectarlo
+     connect(socket_cliente ,server_info->ai_addr, server_info->ai_addrlen);
 
 	freeaddrinfo(server_info);
 
