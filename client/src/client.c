@@ -49,7 +49,7 @@ int main(void)
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
 
 	// Creamos una conexión hacia el servidor
-	conexion = crear_conexion(ip, puerto);
+	conexion = crear_conexion(ip, puerto); //bien
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
 
@@ -61,8 +61,7 @@ int main(void)
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
-   log_destroy(logger);
-   config_destroy(config);
+  
 }
 
 t_log* iniciar_logger(void)
@@ -88,7 +87,7 @@ t_config* iniciar_config(void)
 void leer_consola(t_log* logger)
 {
 	char* leido;
-
+printf("lineas para el log: \n");
 	// La primera te la dejo de yapa
 	leido = readline("> ");
 
@@ -108,15 +107,16 @@ void leer_consola(t_log* logger)
 		leido = readline("> ");
           
 	}
-
+ 
 }
 
 void paquete(int conexion)
 {
 	// Ahora toca lo divertido!
 	char* leido;
-	
-    t_paquete* paquete = malloc(sizeof(t_paquete)); // Inicializa paquete
+	printf("lineas para el paquete\n");
+    t_paquete* paquete =  crear_paquete(); // Inicializa paquete
+
 
     // Verifica si la asignación de memoria fue exitosa
     if (paquete == NULL) {
@@ -131,6 +131,7 @@ void paquete(int conexion)
 				free(leido);
 				break;
 			}
+			 
           agregar_a_paquete(paquete, leido, strlen(leido) + 1);
 		  free(leido);
 
@@ -147,4 +148,5 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 	  log_destroy(logger);
 	config_destroy(config);
 	liberar_conexion(conexion);
+	printf("programa terminado");
 }
