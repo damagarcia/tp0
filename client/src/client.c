@@ -98,8 +98,9 @@ void leer_consola(t_log* logger)
 			break;
 		}
 		// El resto, las vamos leyendo y logueando hasta recibir un string vacío
-		printf("%s\n", leido);
-		log_info(logger, "Mensaje: %s", leido);
+		
+		log_info(logger, "%s", leido);
+
 
       
 		// ¡No te olvides de liberar las lineas antes de regresar!
@@ -114,8 +115,14 @@ void paquete(int conexion)
 {
 	// Ahora toca lo divertido!
 	char* leido;
-	t_paquete* paquete;
+	
+    t_paquete* paquete = malloc(sizeof(t_paquete)); // Inicializa paquete
 
+    // Verifica si la asignación de memoria fue exitosa
+    if (paquete == NULL) {
+        fprintf(stderr, "Error al asignar memoria para el paquete\n");
+        return; // Salir si no se pudo asignar memoria
+    }
 	// Leemos y esta vez agregamos las lineas al paquete
     while (1){
 		leido = readline(">");

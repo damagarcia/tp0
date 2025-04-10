@@ -15,17 +15,20 @@ int iniciar_servidor(void)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	int err=getaddrinfo(NULL, PUERTO, &hints, &servinfo);
+	getaddrinfo(NULL, PUERTO, &hints, &servinfo);
 
 	// Creamos el socket de escucha del servidor
-    socket_servidor = socket(server_info->ai_family,server_info->ai_socktype,server_info->ai_protocol);
+    socket_servidor = socket(servinfo->ai_family,servinfo->ai_socktype,servinfo->ai_protocol);
+
 	// Asociamos el socket a un puerto
-	if (bind(socket_servidor,server_info->ai_addr, server_info->ai_addrlen) == -1) {
-    error_show("No se pudo hacer bind");
+
+	if (bind(socket_servidor,servinfo->ai_addr, servinfo->ai_addrlen) == -1) {
+     log_info(logger,"no se pudo hacer bind");
     abort();
 	}else{
-     setsockopt(fd_escucha, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int));
+     setsockopt(socket_servidor, SOL_SOCKET, SO_REUSEPORT, &(int){1}, sizeof(int));
 	}
+
 	// Escuchamos las conexiones entrantes
 
 	freeaddrinfo(servinfo);
@@ -36,13 +39,16 @@ int iniciar_servidor(void)
 
 int esperar_cliente(int socket_servidor)
 {
-
-
 	// Aceptamos un nuevo cliente
-	int socket_cliente;
-	log_info(logger, "Se conecto un cliente!");
+	 int socket_cliente;
+
     socket_cliente = accept(socket_servidor, NULL, NULL);
-	return socket_cliente;
+    if (socket_cliente == -1) {
+        log_error(logger, "Error al aceptar cliente");
+        return -1;
+    }
+    log_info(logger, "Se conectó un cliente!");
+    return socket_cliente;
 }
 
 int recibir_operacion(int socket_cliente)
